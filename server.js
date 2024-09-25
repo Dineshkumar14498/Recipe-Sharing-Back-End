@@ -5,7 +5,7 @@ const connectDb = require("./config/connectionDb")
 const cors = require("cors")
 const bcrypt = require ("bcrypt")
 
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 4000;
 connectDb()
 
 app.use(express.json())
