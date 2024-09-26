@@ -1,11 +1,13 @@
-const express = require("express")
+const express = require ("express")
 const app = express()
 const dotenv = require("dotenv").config()
-const connectDb = require("./config/connectionDb")
+const connectDb = require("./config/connectDb")
 const cors = require("cors")
-const bcrypt = require ("bcrypt")
-
 const PORT = process.env.PORT || 4000;
+
+  
+
+
 connectDb()
 
 app.use(express.json())
