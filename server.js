@@ -1,11 +1,9 @@
-const express = require ("express")
+const express = require("express")
 const app = express()
 const dotenv = require("dotenv").config()
 const connectDb = require("./config/connectDb")
 const cors = require("cors")
 const PORT = process.env.PORT || 4000;
-
-  
 
 
 connectDb()
