@@ -11,21 +11,7 @@ const storage = multer.diskStorage({
     }
 })
 
-const upload = multer({ 
-    storage: storage,
-    fileFilter: (req, file, cb) => {
-        const filetypes = /jpeg|jpg|png|gif/; // Allowed file types
-        const mimetype = filetypes.test(file.mimetype);
-        const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-        
-        if (mimetype && extname) {
-            return cb(null, true);
-        }
-        cb("Error: File upload only supports the following filetypes - " + filetypes);
-    }
-
-
- })
+const upload = multer({ storage: storage })
 
 const getRecipes = async (req, res) => {
     const recipes = await Recipes.find()
@@ -47,33 +33,28 @@ const addRecipe = async (req, res) => {
     }
 
     const newRecipe = await Recipes.create({
-        title,
-        ingredients,
-        instructions,
-        time,
-        coverImage: req.file ? req.file.filename : null, // Handle no image case
+        title, ingredients, instructions, time, coverImage: req.file.filename,
         createdBy: req.user.id
-    });
-    return res.status(201).json(newRecipe); // Use 201 status code for created resource
+    })
+    return res.json(newRecipe)
+}
+
+const editRecipe = async (req, res) => {
+    const { title, ingredients, instructions, time } = req.body
+    let recipe = await Recipes.findById(req.params.id)
+
+    try {
+        if (recipe) {
+            let coverImage = req.file?.filename ? req.file?.filename : recipe.coverImage
+            await Recipes.findByIdAndUpdate(req.params.id, { ...req.body, coverImage }, { new: true })
+            res.json({ title, ingredients, instructions, time })
+        }
+    }
+    catch (err) {
+        return res.status(404).json({ message: err })
+    }
 
 }
-const editRecipe = async (req, res) => {
-    const { title, ingredients, instructions, time } = req.body;
-    const recipeId = req.params.id;
-    
-    try {
-        const recipe = await Recipes.findById(recipeId);
-        if (!recipe) {
-            return res.status(404).json({ message: "Recipe not found" });
-        }
-
-        let coverImage = req.file?.filename ? req.file.filename : recipe.coverImage;
-        const updatedRecipe = await Recipes.findByIdAndUpdate(recipeId, { ...req.body, coverImage }, { new: true });
-        res.json(updatedRecipe);
-    } catch (err) {
-        return res.status(500).json({ message: err.message });
-    }
-};
 const deleteRecipe = async (req, res) => {
     try {
         await Recipes.deleteOne({ _id: req.params.id })
