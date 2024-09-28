@@ -1,11 +1,12 @@
 const mongoose = require ("mongoose")
 
-//const mongoURI = "mongodb+srv://<username>:<password>@cluster0.mongodb.net/myDatabase?retryWrites=true&w=majority";
 
 
 const connectDb = async () => {
     try {
       await mongoose.connect(process.env.MONGO_URI, {
+        useNewUrlParser: true,
+            useUnifiedTopology: true,
        
       });
       console.log('MongoDB connected');
@@ -15,5 +16,5 @@ const connectDb = async () => {
     }
   };
   
-  connectDb();
+
 module.exports = connectDb
