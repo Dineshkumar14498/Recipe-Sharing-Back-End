@@ -65,4 +65,25 @@ const deleteRecipe=async(req,res)=>{
     }
 }
 
-module.exports={getRecipes,getRecipe,addRecipe,editRecipe,deleteRecipe,upload}
+const rateRecipe = async (req, res) => {
+    const { recipeId, rating } = req.body;
+
+    try {
+        // Update the recipe with the new rating
+        const recipe = await Recipe.findById(recipeId);
+        if (!recipe) return res.status(404).send('Recipe not found.');
+
+        // Assuming you have a field for ratings (e.g., totalRating and numberOfRatings)
+        recipe.totalRating += rating;
+        recipe.numberOfRatings += 1;
+        await recipe.save();
+
+        res.status(200).send('Rating submitted successfully.');
+    } catch (error) {
+        res.status(500).send('Error submitting rating: ' + error.message);
+    }
+};
+
+
+
+module.exports={getRecipes,getRecipe,addRecipe,editRecipe,deleteRecipe,upload,rateRecipe}

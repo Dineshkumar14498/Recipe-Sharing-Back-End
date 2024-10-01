@@ -22,7 +22,17 @@ const recipeSchema=mongoose.Schema({
     createdBy:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"User"
-    }
+    },
+
+    totalRating: {
+        type: Number,
+        default: 0,
+    },
+    numberOfRatings: {
+        type: Number,
+        default: 0,
+    },
+
 
 },{timestamps:true})
 

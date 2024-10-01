@@ -1,36 +1,31 @@
-// controllers/commentController.js
-const Comment = require('../models/comment'); // Adjust the path as necessary
+const Comment = require('../models/comment');
 
-// Fetch comments for a specific recipe
-exports.getComments = async (req, res) => {
+const getComments = async (req, res) => {
     try {
-        const comments = await Comment.find({ recipeId: req.params.recipeId }).sort({ createdAt: -1 });
-        res.json(comments);
+        const comments = await Comment.find();
+        res.status(200).json(comments);
     } catch (error) {
-        console.error('Error fetching comments:', error);
-        res.status(500).json({ message: 'Error fetching comments' });
+        res.status(500).json({ message: error.message });
     }
 };
 
-// Post a new comment for a specific recipe
-exports.addComment = async (req, res) => {
-    const { comment } = req.body;
+const createComment = async (req, res) => {
+    const { username, text } = req.body;
 
-    // Check if comment is empty
-    if (!comment || comment.trim() === "") {
-        return res.status(400).json({ message: 'Comment cannot be empty' });
+    if (!username || !text) {
+        return res.status(400).json({ message: 'Username and comment text are required' });
     }
-
-    const newComment = new Comment({
-        recipeId: req.params.recipeId,
-        comment,
-    });
 
     try {
-        const savedComment = await newComment.save();
-        res.status(201).json(savedComment);
+        const newComment = new Comment({ username, text });
+        await newComment.save();
+        res.status(201).json(newComment);
     } catch (error) {
-        console.error('Error posting comment:', error);
-        res.status(400).json({ message: 'Error posting comment' });
+        res.status(500).json({ message: error.message });
     }
+};
+
+module.exports = {
+    getComments,
+    createComment
 };
