@@ -1,5 +1,13 @@
 const mongoose=require("mongoose")
 
+const commentSchema = new mongoose.Schema({
+    comment: String,
+    user: String,   // Reference to user who posted the comment
+    rating: Number, // Rating out of 5
+    createdAt: { type: Date, default: Date.now }
+});
+  
+
 const recipeSchema=mongoose.Schema({
     title:{
         type:String,
@@ -13,6 +21,8 @@ const recipeSchema=mongoose.Schema({
         type:String,
         required:true
     },
+
+    
     time:{
         type:String,
     },
@@ -23,15 +33,8 @@ const recipeSchema=mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:"User"
     },
+    comments: [commentSchema] ,
 
-    totalRating: {
-        type: Number,
-        default: 0,
-    },
-    numberOfRatings: {
-        type: Number,
-        default: 0,
-    },
 
 
 },{timestamps:true})
